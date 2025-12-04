@@ -5,7 +5,7 @@ import numpy as np
 pd.set_option('display.max_columns',200)
 pd.set_option('display.width',120)
 
-Data_Path = os.path.join('data','CZ_6A_Events_2024-08-06.xlsx')
+Data_Path = os.path.join('data','Merged_DATA.xlsx')
 Plot_Path = os.path.join('outputs','Plots')
 os.makedirs(Plot_Path , exist_ok=True)
 print(Data_Path)
@@ -19,6 +19,8 @@ print("-" * 60)
 duplicate_rows = df.duplicated().sum()
 print("Duplicate Rows" , duplicate_rows)
 print("# # " * 20)
+
+
 num_cols = df.select_dtypes(include=[np.number]).columns.tolist()
 bool_cols = df.select_dtypes(include=[np.bool]).columns.tolist()
 datetime64_cols = df.select_dtypes(include=["datetime64[ns]"]).columns.tolist()
@@ -50,16 +52,6 @@ print("Missing values count:\n" , missing)
 print("Missing values percent:\n", missing_pct)
 
 
-# # - - Time Feature Checks  - - # # 
-
-df['creationTsOfCDM'] = pd.to_datetime(df['creationTsOfCDM'], errors='coerce', utc=True)
-df['cdmTca'] = pd.to_datetime(df['cdmTca'], errors='coerce', utc=True)
-df['hours_to_tca'] = (df['cdmTca'] - df['creationTsOfCDM']).dt.total_seconds() / 3600.0
-print("\nhours_to_tca summary:")
-print(df['hours_to_tca'].describe())
-
-
-
 ################################################################
 
 import matplotlib.pyplot as plt
@@ -69,7 +61,7 @@ import seaborn as sns
 
 # # - - Target Creation and Class Imblance - - # # 
 
-df['HighRisk'] = ((df['cdmPc'] > 1e-6) & (df['cdmMissDistance'] < 2000)).astype(int)
+# df['HighRisk'] = ((df['cdmPc'] > 1e-6) & (df['cdmMissDistance'] < 2000)).astype(int)
 print("\n HighRisk Distribution (counts) : ")
 print(df['HighRisk'].value_counts())
 plt.figure(figsize=(6,4))
@@ -100,3 +92,4 @@ sns.heatmap(corr , cmap='coolwarm' , center = 0, annot = True)
 plt.title('Spearman Correlation Heatmap')
 plt.savefig(os.path.join(Plot_Path,'Correlation Heatmap.png'))
 plt.show()
+plt.close()
