@@ -9,9 +9,8 @@ from sklearn.metrics import average_precision_score # AUC-PR
 from xgboost import XGBClassifier
 from sklearn.preprocessing import LabelEncoder
 
-from XG_Boost_Feature_data import compute_scale_pos_weight
-# 1) Feature lists
 
+# 1) Feature lists
 XG_Boost = [
         'cdmMissDistance', 'cdmPc',
         'SAT1_CDM_TYPE', 'SAT2_CDM_TYPE',
@@ -80,6 +79,12 @@ XG_Boost_Featured = [
     ]
 
 
+def compute_scale_pos_weight(y: pd.Series) -> float:
+    pos = y.sum()
+    neg = len(y) - pos
+    if pos == 0:
+        return 1.0
+    return neg / pos
 
 def tune_model(df, feature_list, model_name):
     X = df[feature_list]
