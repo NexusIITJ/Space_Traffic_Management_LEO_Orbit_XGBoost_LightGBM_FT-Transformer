@@ -1,3 +1,7 @@
+import os
+import json
+from datetime import datetime
+
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -106,8 +110,8 @@ val_df = df[split:]
 train_dataset = SdcDataset(train_df)
 val_dataset = SdcDataset(val_df)
 
-train_loader = DataLoader(train_dataset, batch_size=512, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=512)
+train_loader = DataLoader(train_dataset, batch_size=256, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=256)
 
 # ----------------------------------------------------
 # 8. Model, Loss, Optimizer
@@ -244,11 +248,12 @@ for epoch in range(epochs):
     best_f1_thr = 0.5
     best_recall_thr = 0.5
     best_recall = 0.0
-    min_precision_for_recall = 0.2
-
+    min_precision_for_recall = 0.50
     precisions, recalls, thrs = precision_recall_curve(all_class_labels, all_class_preds)
+    candidates = np.append(thrs, 1.0)
+
     # precision_recall_curve returns len(thrs)+1 for precisions/recalls; align by ignoring last precision/recall
-    for i, thr in enumerate(np.append(thrs, 1.0)):
+    for thr in np.append(0.0, candidates):
         preds_thr = (all_class_preds >= thr).astype(int)
         prec = precision_score(all_class_labels, preds_thr, zero_division=0)
         rec = recall_score(all_class_labels, preds_thr, zero_division=0)
@@ -260,30 +265,35 @@ for epoch in range(epochs):
             best_recall = rec
             best_recall_thr = thr
 
+
     # Binarize at best F1 for reporting
     preds_best_f1 = (all_class_preds >= best_f1_thr).astype(int)
+    preds_best_recall = (all_class_preds >= best_recall_thr).astype(int)
 
     # Confusion matrix and classification report
     cm_default = confusion_matrix(all_class_labels, class_preds_binary)
-    cm_best = confusion_matrix(all_class_labels, preds_best_f1)
+    cm_best_f1 = confusion_matrix(all_class_labels, preds_best_f1)
+    cm_best_recall = confusion_matrix(all_class_labels, preds_best_recall)
     report_default = classification_report(all_class_labels, class_preds_binary, digits=4)
-    report_best = classification_report(all_class_labels, preds_best_f1, digits=4)
+    report_best_f1 = classification_report(all_class_labels, preds_best_f1, digits=4)
+    report_best_recall = classification_report(all_class_labels, preds_best_recall, digits=4)
+
+
 
     # Brier score (calibration)
     brier = brier_score_loss(all_class_labels, all_class_preds)
 
     # Error counts
-    tn, fp, fn, tp = cm_best.ravel()
+    tn, fp, fn, tp = cm_best_recall.ravel()
 
     # --- Regression metrics for Pc ---
     mse = mean_squared_error(all_pc_labels, all_pc_preds)
     mae = mean_absolute_error(all_pc_labels, all_pc_preds)
     rmse = np.sqrt(mse)
     r2 = r2_score(all_pc_labels, all_pc_preds)
-    
     val_loss_avg = val_losses / len(val_loader)
-    recall = recall_score(all_class_labels, class_preds_binary)
-    auc_pr = average_precision_score(all_class_labels, all_class_preds)
+    recall_default = recall_score(all_class_labels, class_preds_binary)
+    auc_pr_val = average_precision_score(all_class_labels, all_class_preds)
 
     # --- Print everything clearly ---
     print("\n===== FT-Transformer Validation Summary =====")
@@ -293,14 +303,17 @@ for epoch in range(epochs):
     print(f"Brier score: {brier:.6f}")
     print(f"Best F1: {best_f1:.4f} at threshold {best_f1_thr:.3f}")
     print(f"Best recall (prec >= {min_precision_for_recall}): {best_recall:.4f} at threshold {best_recall_thr:.3f}")
-    print("\n--- Default threshold (0.5) classification report ---")
+    print("\n--- Default threshold (0.5) classification report ,Default , best_recall , F1 ---")
     print(report_default)
-    print("Confusion matrix (default 0.5):")
-    print(cm_default)
+    
+    print(report_default)
+    print(report_best_recall)
     print("\n--- Best-F1 threshold classification report ---")
-    print(report_best)
-    print("Confusion matrix (best F1):")
-    print(cm_best)
+    print(report_best_f1)
+    print("Confusion matrix (best F1): default , recall , F1")
+    print(cm_default)
+    print(cm_best_recall)
+    print(cm_best_f1)
     print(f"\nTP: {tp}, FP: {fp}, TN: {tn}, FN: {fn}")
     print(f"Precision (best F1): {precision_score(all_class_labels, preds_best_f1, zero_division=0):.4f}")
     print(f"Recall (best F1): {recall_score(all_class_labels, preds_best_f1):.4f}")
@@ -311,6 +324,62 @@ for epoch in range(epochs):
     print(f"MAE: {mae:.6f}")
     print(f"RMSE: {rmse:.6f}")
     print(f"R2: {r2:.6f}")
+
+    results_summary = {
+    "model": "FT-Transformer",
+    "epoch": int(epoch + 1),
+    "timestamp": datetime.utcnow().isoformat() + "Z",
+    "validation": {
+        "val_loss_avg": float(val_loss_avg),
+        "auc_pr": float(auc_pr),
+        "auc_roc": None if np.isnan(auc_roc) else float(auc_roc),
+        "brier": float(brier)
+    },
+    "thresholds": {
+        "default_threshold": 0.5,
+        "best_f1_threshold": float(best_f1_thr),
+        "best_f1": float(best_f1),
+        "best_recall_threshold": float(best_recall_thr),
+        "best_recall": float(best_recall),
+        "min_precision_for_recall": float(min_precision_for_recall)
+    },
+    "classification_reports": {
+        "default_report": report_default,
+        "best_recall_report": report_best_recall,
+        "best_f1_report": report_best_f1
+    },
+    "confusion_matrices": {
+        "default": cm_default.tolist(),
+        "best_recall": cm_best_recall.tolist(),
+        "best_f1": cm_best_f1.tolist()
+    },
+    "counts_best_recall": {
+        "tp": int(tp),
+        "fp": int(fp),
+        "tn": int(tn),
+        "fn": int(fn)
+    },
+    "metrics_best_f1": {
+        "precision": float(precision_score(all_class_labels, preds_best_f1, zero_division=0)),
+        "recall": float(recall_score(all_class_labels, preds_best_f1)),
+        "f1": float(f1_score(all_class_labels, preds_best_f1))
+    },
+    "regression_pc_metrics": {
+        "mse": float(mse),
+        "mae": float(mae),
+        "rmse": float(rmse),
+        "r2": float(r2)
+    }
+}
+
+# ensure results directory exists and save file
+    os.makedirs("results", exist_ok=True)
+    out_file = os.path.join("results", f"ft_transformer_validation_epoch_{epoch+1}.json")
+    with open(out_file, "w") as f:
+        json.dump(results_summary, f, indent=4)
+
+    # optional short confirmation print (single line)
+    print(f"Validation summary saved to: {out_file}")
 
     # Show a few top failure examples for manual inspection (requires original val_df)
     try:

@@ -127,22 +127,29 @@ for name, w in zip(val_probs_df.columns, best_weights):
     print(f"{name}: {w:.4f}")
 
 # -----------------------------
-# Threshold tuning
+# Threshold tuning (updated: precision >= 0.50)
 # -----------------------------
 best_thr = 0.5
 best_recall = 0.0
+min_precision = 0.50   # enforce meaningful precision
 
 val_avg = val_probs_df.values.dot(best_weights)
 
-for thr in np.linspace(0, 1, 101):
+for thr in np.linspace(0, 1, 1001):   # finer search
     preds = (val_avg >= thr).astype(int)
     prec = precision_score(y_val, preds, zero_division=0)
     rec = recall_score(y_val, preds)
-    if prec >= 0.2 and rec > best_recall:
+
+    # skip thresholds that destroy precision
+    if prec < min_precision:
+        continue
+
+    #  maximize recall under precision constraint
+    if rec > best_recall:
         best_recall = rec
         best_thr = thr
 
-print(f"\nChosen threshold: {best_thr:.2f}")
+print(f"\nChosen threshold (precision >= {min_precision}): {best_thr:.4f}")
 
 # -----------------------------
 # Final Test Evaluation

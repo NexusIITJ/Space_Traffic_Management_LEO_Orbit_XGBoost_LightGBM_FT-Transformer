@@ -1,0 +1,73 @@
+{
+    "model": "FT-Transformer",
+    "epoch": 10,
+    "timestamp": "2025-12-12T17:29:12.985619Z",
+    "validation": {
+        "val_loss_avg": 3.772731644679888e-05,
+        "auc_pr": 1.0,
+        "auc_roc": 1.0,
+        "brier": 1.422141230224736e-13
+    },
+    "thresholds": {
+        "default_threshold": 0.5,
+        "best_f1_threshold": 0.9999881982803345,
+        "best_f1": 1.0,
+        "best_recall_threshold": 5.742457460655714e-07,
+        "best_recall": 1.0,
+        "min_precision_for_recall": 0.5
+    },
+    "classification_reports": {
+        "default_report": "              precision    recall  f1-score   support\n\n         0.0     1.0000    1.0000    1.0000    114049\n         1.0     1.0000    1.0000    1.0000       809\n\n    accuracy                         1.0000    114858\n   macro avg     1.0000    1.0000    1.0000    114858\nweighted avg     1.0000    1.0000    1.0000    114858\n",
+        "best_recall_report": "              precision    recall  f1-score   support\n\n         0.0     1.0000    0.9929    0.9964    114049\n         1.0     0.5000    1.0000    0.6667       809\n\n    accuracy                         0.9930    114858\n   macro avg     0.7500    0.9965    0.8316    114858\nweighted avg     0.9965    0.9930    0.9941    114858\n",
+        "best_f1_report": "              precision    recall  f1-score   support\n\n         0.0     1.0000    1.0000    1.0000    114049\n         1.0     1.0000    1.0000    1.0000       809\n\n    accuracy                         1.0000    114858\n   macro avg     1.0000    1.0000    1.0000    114858\nweighted avg     1.0000    1.0000    1.0000    114858\n"
+    },
+    "confusion_matrices": {
+        "default": [
+            [
+                114049,
+                0
+            ],
+            [
+                0,
+                809
+            ]
+        ],
+        "best_recall": [
+            [
+                113240,
+                809
+            ],
+            [
+                0,
+                809
+            ]
+        ],
+        "best_f1": [
+            [
+                114049,
+                0
+            ],
+            [
+                0,
+                809
+            ]
+        ]
+    },
+    "counts_best_recall": {
+        "tp": 809,
+        "fp": 809,
+        "tn": 113240,
+        "fn": 0
+    },
+    "metrics_best_f1": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+    },
+    "regression_pc_metrics": {
+        "mse": 3.7647132558049634e-05,
+        "mae": 0.006046040914952755,
+        "rmse": 0.006135725919404291,
+        "r2": -331320.625
+    }
+}

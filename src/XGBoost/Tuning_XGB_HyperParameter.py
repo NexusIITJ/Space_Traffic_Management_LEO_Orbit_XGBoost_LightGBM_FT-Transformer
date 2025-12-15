@@ -88,7 +88,8 @@ def compute_scale_pos_weight(y: pd.Series) -> float:
 def tune_model(df, feature_list, model_name):
     X = df[feature_list]
     y = df['HighRisk']
-    ## change this to train, validation and test set After##
+    
+    # train / test split 
     X_train, X_val, y_train, y_val = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )

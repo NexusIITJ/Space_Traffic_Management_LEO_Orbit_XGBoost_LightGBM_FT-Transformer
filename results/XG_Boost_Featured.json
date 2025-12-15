@@ -1,7 +1,7 @@
 {
     "model_name": "XG_Boost_Featured",
     "default_threshold": 0.5,
-    "best_threshold": 0.68,
+    "best_threshold": 0.7331819534301758,
     "confusion_matrix_default": [
         [
             114052,
@@ -27,7 +27,7 @@
         "precision": 0.9776674937965261,
         "f1": 0.9887076537013801,
         "accuracy": 0.9998432847516063,
-        "auc_pr": 0.9999978083632857,
+        "auc_pr": 0.999684007059176,
         "auc_roc": 0.9999978083632857
     },
     "metrics_best_threshold": {
