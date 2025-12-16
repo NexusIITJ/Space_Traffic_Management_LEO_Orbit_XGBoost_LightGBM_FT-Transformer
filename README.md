@@ -1,7 +1,5 @@
 # 🛰️ Space Traffic Management: LEO Orbit Prediction with XGBoost, LightGBM, and FT-Transformer
 
-# 🛰️ Space Traffic Management: LEO Orbit Prediction with XGBoost, LightGBM, and FT-Transformer
-
 <div align="center">
 
 ![Project Banner](https://img.shields.io/badge/Project%20Type-Data%20Science%2FML-blue.svg?style=for-the-badge)
@@ -131,7 +129,7 @@ In space, missing a crash is much worse than a false alarm. However, too many fa
 ├── data/                          # Folder for your dataset (extract zip here)
 ├── results/                       # Where metrics and graphs are saved
 └── outputs/                       # Where model predictions are saved
-
+```
 ## 📊 Results Summary
 
 
