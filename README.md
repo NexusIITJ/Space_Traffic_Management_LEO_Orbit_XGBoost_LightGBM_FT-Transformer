@@ -14,9 +14,10 @@
 
 ## 📖 Overview
 
-This project delves into the critical domain of Space Traffic Management (STM) in Low Earth Orbit (LEO) by implementing and comparing advanced machine learning models. With the exponential growth of satellite constellations and orbital debris, accurate prediction of orbital trajectories and collision risks is vital for ensuring the long-term sustainability and safety of space operations.
+Abstract
+Given the increasing presence of satellites and debris within Low Earth Orbit, there clearly exists a need for early indications on high-risk conjunctions, and we undertook this research endeavor as an exploration into utilizing models based on machine learning. We processed a set combining CDM files for 574,289 data instances with structured data cleansing, removal of leakage variables, and added engineered variables. We then developed models based on three criteria: an FT-Transformer model based on original clean variables and boolean flags, LightGBM and XGBoost based on datasets with variables, and additional models without leakage for determining which extent models rely on variables ‘cdmPc’ and ‘miss distance’. We normalized hyperparameters and weights for ensembles via Optuna with thresholds determined via scanning probabilities for maximum recall while remaining at precision values exceeding 0.50. The FT-Transformer model demonstrated superior solo performance with precision and recall equaling 1.00 on multiple instances on the testing set, indicating successful learning on CDM data via an attention-based model. The ensemble model combining predictions for all XGBoost and LightGBM models offered consistent predictions for various attribute forms and satisfied the precision constraint at high recall rates. Outcomes indicate that respective transformer models and weighted ensembles based on tree models could be implemented effectively for high-risk conjunction detection with an optimal precision-recall band via thresholding.
 
-This repository provides a comprehensive Jupyter notebook that showcases the application of popular gradient boosting algorithms, **XGBoost** and **LightGBM**, alongside the innovative deep learning architecture, **FT-Transformer (Feature-Tokenization Transformer)**, for handling tabular data in this complex space domain. The goal is to demonstrate the efficacy of these models in extracting actionable insights and making reliable predictions for LEO traffic.
+**Keywords:** Space Traffic Management; Conjunction Assessment; Machine Learning; FT‑Transformer; XGBoost; LightGBM; Collision Risk Prediction
 
 ## ✨ Features
 
@@ -74,7 +75,7 @@ To set up this project and run the orbital traffic management experiments, follo
     ```
 
 3.  **Install dependencies**
-    Since a `requirements.txt` file is not provided, please install the necessary libraries manually. It is highly recommended to generate a `requirements.txt` (e.g., `pip freeze > requirements.txt`) after setting up your environment for future reproducibility.
+    please install the necessary libraries manually. It is highly recommended to install all dependencies after setting up your environment for future reproducibility.
     ```bash
     pip install pandas numpy scikit-learn xgboost lightgbm torch matplotlib seaborn jupyterlab
     ```
@@ -87,24 +88,6 @@ To set up this project and run the orbital traffic management experiments, follo
     unzip sa-competition-files.zip -d data/
     ```
 
-5.  **Run the Jupyter Notebook**
-    The core analysis and model implementations are within the Jupyter Notebook. You can run it locally or leverage Google Colab for cloud-based execution.
-
-    *   **Option A: Google Colab**
-        1.  Go to [Google Colab](https://colab.research.google.com/).
-        2.  Click `File` -> `Upload notebook` and upload `IGOM_ML_LightGBM_Colab.ipynb`.
-        3.  Ensure you also upload the `ft_transformer.pth` file and follow instructions within the notebook to unzip `sa-competition-files.zip` if you didn't do it locally.
-        4.  Run all cells in the notebook.
-
-    *   **Option B: Local Jupyter Environment**
-        1.  Ensure you have `jupyterlab` installed (it was included in the `pip install` command).
-        2.  Start Jupyter Lab:
-            ```bash
-            jupyter lab
-            ```
-        3.  Your web browser will open, navigate to and open `IGOM_ML_LightGBM_Colab.ipynb`.
-        4.  Execute the cells sequentially to run the experiments.
-
 ## 📁 Project Structure
 
 ```
@@ -113,12 +96,14 @@ To set up this project and run the orbital traffic management experiments, follo
 ├── IGOM_ML_LightGBM_Colab.ipynb      # Main Jupyter notebook containing ML experiments and analysis
 ├── README.md                           # The project's README file
 ├── ft_transformer.pth                  # Pre-trained weights for the FT-Transformer model
-├── models/                             # (Empty) Directory intended for saving trained models (e.g., .pkl, .pt)
-├── outputs/                            # (Empty) Directory intended for generated outputs like predictions or intermediate data
-├── results/                            # (Empty) Directory intended for experimental results, metrics, and plots
-├── sa-competition-files.zip            # Zipped raw dataset for the space traffic management competition
-├── src/                                # (Empty) Placeholder for source code, utility scripts, or custom modules
-└── testing.py                          # (Empty) Placeholder for unit/integration tests
+├── models/                             #  Directory intended for saving trained models (e.g., .pkl, .pt)
+├── outputs/                            #  Directory intended for generated outputs like predictions or intermediate data
+├── results/                            #  Directory intended for experimental results, metrics, and plots
+├── sa-competition-files.zip            #  Zipped raw dataset for the space traffic management competition
+├── src/                                #  all Models source code, utility scripts, or custom modules
+└── predict_XGB.py                      #  Predict Files for XG_Boost model
+└── predict_LGBM.py                     #  Predict Files for LightGBM model
+└── predict_FTTransformer.py            #  Predict Files for FTTTransformer model
 ```
 
 ## ⚙️ Configuration
@@ -132,7 +117,6 @@ All model configurations, hyperparameter settings, data preprocessing steps, and
 -   **Output Data (`outputs/`):** Expected to contain generated predictions, processed intermediate datasets, or other files produced during the notebook execution.
 -   **Experiment Results (`results/`):** This directory is where evaluation metrics, comparative plots, and other quantitative outcomes of the experiments should be stored.
 
-The `IGOM_ML_LightGBM_Colab.ipynb` notebook details the process to generate, analyze, and store these outputs.
 
 ## 🤝 Contributing
 
@@ -156,17 +140,11 @@ This project is licensed under the [LICENSE_NAME](LICENSE). Please see the `LICE
 -   To the creators and maintainers of **XGBoost**, **LightGBM**, **PyTorch**, **scikit-learn**, **Pandas**, and **NumPy** for providing powerful open-source tools that are foundational to this project.
 -   The broader scientific community and space agencies for their ongoing work in advancing Space Traffic Management.
 
-## 📞 Support & Contact
-
--   🐛 Issues & Bug Reports: Please use the [GitHub Issues](https://github.com/ShivJee-Yadav/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer/issues) section.
--   👤 Author: ShivJee-Yadav ([GitHub Profile](https://github.com/ShivJee-Yadav))
-
----
 
 <div align="center">
 
 **⭐ If this project aids your understanding or work in Space Traffic Management, please consider starring the repository!**
 
-Made with ❤️ by ShivJee-Yadav
+Made with NexusIITJ
 
 </div>
