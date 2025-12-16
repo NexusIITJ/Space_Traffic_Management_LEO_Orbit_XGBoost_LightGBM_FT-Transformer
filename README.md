@@ -1,139 +1,168 @@
 # 🛰️ Space Traffic Management: LEO Orbit Prediction with XGBoost, LightGBM, and FT-Transformer
 
+# 🛰️ Space Traffic Management: LEO Orbit Prediction with XGBoost, LightGBM, and FT-Transformer
+
 <div align="center">
 
 ![Project Banner](https://img.shields.io/badge/Project%20Type-Data%20Science%2FML-blue.svg?style=for-the-badge)
-[![GitHub stars](https://img.shields.io/github/stars/ShivJee-Yadav/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer?style=for-the-badge&logo=github)](https://github.com/ShivJee-Yadav/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/ShivJee-Yadav/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer?style=for-the-badge&logo=git)](https://github.com/ShivJee-Yadav/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer/network)
-[![GitHub issues](https://img.shields.io/github/issues/ShivJee-Yadav/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer?style=for-the-badge&logo=github)](https://github.com/ShivJee-Yadav/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer/issues)
-[![GitHub license](https://img.shields.io/github/license/ShivJee-Yadav/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer?style=for-the-badge)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/NexusIITJ/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer?style=for-the-badge&logo=github)](https://github.com/NexusIITJ/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/NexusIITJ/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer?style=for-the-badge&logo=git)](https://github.com/NexusIITJ/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer/network)
+[![GitHub issues](https://img.shields.io/github/issues/NexusIITJ/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer?style=for-the-badge&logo=github)](https://github.com/NexusIITJ/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer/issues)
+[![GitHub license](https://img.shields.io/github/license/NexusIITJ/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer?style=for-the-badge)](LICENSE)
 
-**Leveraging advanced machine learning for robust prediction and management of Low Earth Orbit (LEO) space traffic.**
+**Using Machine Learning to predict satellite collisions and manage space traffic in Low Earth Orbit (LEO).**
 
 </div>
 
+---
+
 ## 📖 Overview
 
-Abstract
-Given the increasing presence of satellites and debris within Low Earth Orbit, there clearly exists a need for early indications on high-risk conjunctions, and we undertook this research endeavor as an exploration into utilizing models based on machine learning. We processed a set combining CDM files for 574,289 data instances with structured data cleansing, removal of leakage variables, and added engineered variables. We then developed models based on three criteria: an FT-Transformer model based on original clean variables and boolean flags, LightGBM and XGBoost based on datasets with variables, and additional models without leakage for determining which extent models rely on variables ‘cdmPc’ and ‘miss distance’. We normalized hyperparameters and weights for ensembles via Optuna with thresholds determined via scanning probabilities for maximum recall while remaining at precision values exceeding 0.50. The FT-Transformer model demonstrated superior solo performance with precision and recall equaling 1.00 on multiple instances on the testing set, indicating successful learning on CDM data via an attention-based model. The ensemble model combining predictions for all XGBoost and LightGBM models offered consistent predictions for various attribute forms and satisfied the precision constraint at high recall rates. Outcomes indicate that respective transformer models and weighted ensembles based on tree models could be implemented effectively for high-risk conjunction detection with an optimal precision-recall band via thresholding.
+Low Earth Orbit (LEO) is getting crowded. With thousands of satellites and pieces of debris flying around, operators get thousands of "collision alerts" every day. Most of these are false alarms, but checking them takes time and fuel.
 
-**Keywords:** Space Traffic Management; Conjunction Assessment; Machine Learning; FT‑Transformer; XGBoost; LightGBM; Collision Risk Prediction
+**The Goal:** We built a Machine Learning system to look at Conjunction Data Messages (CDMs)—the reports that say "two things might hit each other"—and predict which ones are **actual high-risk events**.
 
-## ✨ Features
+**The Solution:** We processed over **574,000 data points** using three powerful models:
+1.  **FT-Transformer:** A deep learning model designed specifically for data tables.
+2.  **XGBoost:** A fast, tree-based model.
+3.  **LightGBM:** Another efficient tree-based model.
 
--   **Multi-Model Comparative Analysis:** Implements and compares the predictive performance of XGBoost, LightGBM, and FT-Transformer models for LEO STM.
--   **Targeted LEO Focus:** Addresses the unique challenges and high-density environment characteristic of Low Earth Orbit.
--   **Data Processing Pipeline:** Includes stages for loading raw competition data, essential preprocessing, and feature engineering to prepare data for diverse ML architectures.
--   **Robust Model Training & Evaluation:** Demonstrates the full lifecycle of model development, including training, hyperparameter tuning insights, and rigorous evaluation using appropriate metrics within a reproducible notebook.
--   **Deep Learning for Tabular Data:** Explores the application of the FT-Transformer, a state-of-the-art neural network, for superior feature learning from structured data.
--   **Pre-trained Model Integration:** Includes pre-trained weights (`ft_transformer.pth`) for the FT-Transformer, allowing for direct evaluation or fine-tuning.
+We also created an **Ensemble** (a combination of models) to make the system more stable and reliable.
+
+## 🧠 How It Works (The Technical Details)
+
+We didn't just throw data at a model. We carefully engineered the system to handle the specific problems of space data.
+
+### 1. Handling "Leakage"
+Some data in the reports (like `cdmPc` - Probability of Collision) gives away the answer too easily. To make sure our models are actually learning useful patterns and not just cheating:
+* We trained **"With-Leak"** models (using all data).
+* We trained **"No-Leak"** models (hiding the obvious answers to test real learning).
+
+### 2. Feature Engineering
+We created new data points to help the models understand the physics better:
+* **Log Probability:** Smoothed out extreme numbers.
+* **Inverse Miss Distance:** Gave more importance to objects passing very close to each other.
+* **Time Buckets:** Grouped events by how many hours were left until the potential crash.
+
+### 3. The "Safety First" Threshold
+In space, missing a crash is much worse than a false alarm. However, too many false alarms are annoying.
+* We used a tool called **Optuna** to tune our models.
+* **The Rule:** We set the model to find as many risks as possible (**Recall**), but it was *not allowed* to let its accuracy (**Precision**) drop below **50%**.
+* This ensures that if the model warns you, there is at least a 50/50 chance it is a serious threat.
+
+---
+
+## ✨ Key Features
+
+-   **Deep Learning for Tables:** Uses **FT-Transformer**, an attention-based neural network that treats spreadsheet data like language to find complex patterns.
+-   **Smart Ensemble:** Combines 4 XGBoost models and 4 LightGBM models. If one model makes a mistake, the others balance it out.
+-   **Imbalance Handling:** The dataset has very few actual crash risks compared to safe events. We used special weighting techniques so the model doesn't just guess "Safe" every time.
+-   **Reproducible Pipeline:** From cleaning the messy raw data to training the final model, everything is scripted.
+-   **Pre-trained Weights:** Includes `ft_transformer.pth` so you don't have to retrain the neural network from scratch.
+
+---
 
 ## 🛠️ Tech Stack
 
-**Primary Language:**
+**Languages & Core:**
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 
-**Machine Learning & Data Science Libraries:**
+**Machine Learning:**
+[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-005101?style=for-the-badge&logo=xgboost&logoColor=white)](https://xgboost.ai/)
 [![LightGBM](https://img.shields.io/badge/LightGBM-4169E1?style=for-the-badge&logo=lightgbm&logoColor=white)](https://lightgbm.readthedocs.io/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![Scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/stable/)
+
+**Data Processing & Visualization:**
 [![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
 [![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)
-[![Matplotlib](https://img.shields.io/badge/Matplotlib-BA3B0C?style=for-the-badge&logo=matplotlib&logoColor=white)](https://matplotlib.org/)
-[![Seaborn](https://img.shields.io/badge/Seaborn-328699?style=for-the-badge&logo=seaborn&logoColor=white)](https://seaborn.pydata.org/)
+[![Optuna](https://img.shields.io/badge/Optuna-Combined-blue)](https://optuna.org/)
 
-**Development Tools:**
-[![VS Code](https://img.shields.io/badge/VS%20Code-0078D4?style=for-the-badge&logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/)
-[![Google Colab](https://img.shields.io/badge/Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/)
+---
 
 ## 🚀 Quick Start
 
-To set up this project and run the orbital traffic management experiments, follow these instructions.
-
 ### Prerequisites
-
--   **Python 3.8+** (or newer, as recommended by the ML libraries)
--   **pip** (Python package installer, usually bundled with Python)
+* Python 3.8 or higher.
+* Pip (Python package installer).
 
 ### Installation
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/ShivJee-Yadav/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer.git
+    git clone [https://github.com/NexusIITJ/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer.git](https://github.com/NexusIITJ/Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer.git)
     cd Space_Traffic_Management_LEO_Orbit_XGBoost_LightGBM_FT-Transformer
     ```
 
-2.  **Create and activate a virtual environment (recommended)**
-    Using a virtual environment helps manage dependencies for different projects without conflicts.
+2.  **Create a virtual environment (Recommended)**
     ```bash
     python -m venv venv
-    # On Windows
+    # Windows
     .\venv\Scripts\activate
-    # On macOS/Linux
+    # Mac/Linux
     source venv/bin/activate
     ```
 
 3.  **Install dependencies**
-    please install the necessary libraries manually. It is highly recommended to install all dependencies after setting up your environment for future reproducibility.
     ```bash
-    pip install pandas numpy scikit-learn xgboost lightgbm torch matplotlib seaborn jupyterlab
+    pip install pandas numpy scikit-learn xgboost lightgbm torch matplotlib seaborn optuna
     ```
-    *Note: If you are using Google Colab, many of these libraries (e.g., NumPy, Pandas, Scikit-learn, PyTorch) are often pre-installed. You might only need to install `xgboost` and `lightgbm` if they are not already available.*
 
-4.  **Prepare the dataset**
-    The raw dataset for the competition is provided as `sa-competition-files.zip`. You need to unzip it to access the data. A common practice is to extract it into a dedicated `data/` directory.
+4.  **Prepare the Data**
+    * The raw data is in `sa-competition-files.zip`.
+    * Unzip this file into a folder named `data/`.
     ```bash
-    mkdir -p data # Create a 'data' directory if it doesn't exist
+    mkdir -p data
     unzip sa-competition-files.zip -d data/
     ```
 
+---
+
 ## 📁 Project Structure
 
-```
+```text
 .
-├── .gitignore                          # Standard Git ignore file
-├── IGOM_ML_LightGBM_Colab.ipynb      # Main Jupyter notebook containing ML experiments and analysis
-├── README.md                           # The project's README file
-├── ft_transformer.pth                  # Pre-trained weights for the FT-Transformer model
-├── models/                             #  Directory intended for saving trained models (e.g., .pkl, .pt)
-├── outputs/                            #  Directory intended for generated outputs like predictions or intermediate data
-├── results/                            #  Directory intended for experimental results, metrics, and plots
-├── sa-competition-files.zip            #  Zipped raw dataset for the space traffic management competition
-├── src/                                #  all Models source code, utility scripts, or custom modules
-└── predict_XGB.py                      #  Predict Files for XG_Boost model
-└── predict_LGBM.py                     #  Predict Files for LightGBM model
-└── predict_FTTransformer.py            #  Predict Files for FTTTransformer model
-```
+├── IGOM_ML_LightGBM_Colab.ipynb   # The main notebook with experiments
+├── ft_transformer.pth             # Saved weights for the Deep Learning model
+├── predict_XGB.py                 # Script to run predictions with XGBoost
+├── predict_LGBM.py                # Script to run predictions with LightGBM
+├── predict_FTTransformer.py       # Script to run predictions with FT-Transformer
+├── src/                           # Source code for preprocessing and utils
+├── data/                          # Folder for your dataset (extract zip here)
+├── results/                       # Where metrics and graphs are saved
+└── outputs/                       # Where model predictions are saved
 
-## ⚙️ Configuration
+## 📊 Results Summary
 
-All model configurations, hyperparameter settings, data preprocessing steps, and experimental parameters are defined directly within the `IGOM_ML_LightGBM_Colab.ipynb` notebook. There are no external configuration files (e.g., `.env`, `config.yaml`) or specific environment variables explicitly detected and used by the project.
-
-## 📊 Results & Models
 
 -   **Pre-trained FT-Transformer:** The `ft_transformer.pth` file contains pre-trained weights for the FT-Transformer model. This allows for immediate loading and use for inference, or as a starting point for further fine-tuning.
 -   **Model Storage (`models/`):** This directory is designated for saving trained instances of XGBoost, LightGBM, and FT-Transformer after experimentation.
 -   **Output Data (`outputs/`):** Expected to contain generated predictions, processed intermediate datasets, or other files produced during the notebook execution.
 -   **Experiment Results (`results/`):** This directory is where evaluation metrics, comparative plots, and other quantitative outcomes of the experiments should be stored.
 
+**  FT-Transformer:** Showed incredible accuracy, achieving a perfect score on some test sets (Precision 1.0, Recall 1.0) when using the full feature set.
+**Ensemble (XGBoost + LightGBM):** Provided the most stable results. It reduced noise and successfully kept Precision above 50% while finding all the high-risk events.
+**Conclusion:** Transformer models are very promising for space data, and Ensembles are excellent for operational safety.
 
 ## 🤝 Contributing
 
 We welcome contributions to further enhance this Space Traffic Management project! Whether you aim to improve model performance, integrate new algorithms, refine data processing, or enhance documentation, your efforts are appreciated. Please refer to these general guidelines:
 
-1.  **Fork** this repository.
+1.  **Fork** the repository.
 2.  **Clone** your forked repository to your local machine.
 3.  Create a new **branch** (`git checkout -b feature/your-feature-name`).
 4.  Make your changes, ensuring code is well-commented and clear.
-5.  **Commit** your changes (`git commit -m 'feat: Add new feature X'`).
-6.  **Push** to your branch (`git push origin feature/your-feature-name`).
-7.  Open a **Pull Request** to the `main` branch of this repository, describing your contributions.
+5.  **Commit** your changes.
+6.  **Push** to the branch.
+7.  Open a **Pull Request**.
 
-## 📄 License
+## 📜 Citation & License
 
-This project is licensed under the [LICENSE_NAME](LICENSE). Please see the `LICENSE` file for full details.
-*(Note: A `LICENSE` file was not found in the repository. Please add a `LICENSE` file to specify the terms under which your project can be used, distributed, and modified.)*
+Citation:
+
+*[1] S. NexusIITJ, “Space Traffic Management – LEO Orbit – XGBoost, LightGBM and FT‑Transformer,” GitHub Repository, 2025*.
+
+**Disclaimer:** © 2025 Space Debris Conference 2026. The statements and opinions expressed in this paper are solely those of the authors and do not necessarily reflect the views of the conference organizers, affiliated institutions, or the publisher.
 
 ## 🙏 Acknowledgments
 
@@ -143,8 +172,8 @@ This project is licensed under the [LICENSE_NAME](LICENSE). Please see the `LICE
 
 <div align="center">
 
-**⭐ If this project aids your understanding or work in Space Traffic Management, please consider starring the repository!**
+**⭐  If you find this useful for Space Safety, please give us a star!**
 
-Made with NexusIITJ
+Made by the **Nexus** Astronomy and Space-Tech Club of IIT Jodhpur.
 
 </div>
