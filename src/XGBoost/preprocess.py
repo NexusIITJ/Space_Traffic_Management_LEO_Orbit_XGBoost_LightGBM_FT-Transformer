@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
 
 DATA_DIR = "data"
 OUTPUT_DIR = "Merged_DATA.xlsx"
