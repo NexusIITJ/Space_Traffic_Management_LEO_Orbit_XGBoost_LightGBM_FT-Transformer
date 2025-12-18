@@ -70,6 +70,9 @@ st.header("Space Traffic Management")
 
 
 st.write("### Enter New CDM Data")
+st.write("Current working directory:", os.getcwd())
+st.write("Files:", os.listdir())
+
 with st.expander("Enter Manual Input"):
     with st.form("cdm_form"):
         col1, col2 = st.columns(2)
