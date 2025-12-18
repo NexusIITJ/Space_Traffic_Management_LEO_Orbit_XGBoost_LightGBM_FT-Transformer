@@ -74,11 +74,8 @@ def basic_clean(df: pd.DataFrame) -> pd.DataFrame:
     df['HighRisk'] = (
         (df['cdmPc'] > 1e-6) & (df['cdmMissDistance'] < 2000)
     ).astype(int)
-    minor_df = df[df['HighRisk'] == 1].sample(10, random_state=43)
-    major_df = df[df['HighRisk'] == 0].sample(25, random_state=43)
-    final_df = pd.concat([major_df,minor_df])
-
-    return final_df
+    
+    return df
 
 
 def save_clean_data(df : pd.DataFrame , data_dir:str, filename:str)-> str:
@@ -88,6 +85,7 @@ def save_clean_data(df : pd.DataFrame , data_dir:str, filename:str)-> str:
     print(f"\n Saving Cleanding data to :{output_path}")
     print("\nAfter basic_clean:")
     print(df.info())
+    print(f"Data saved in {output_path}")
     df.to_csv(output_path, index=False)
     
 

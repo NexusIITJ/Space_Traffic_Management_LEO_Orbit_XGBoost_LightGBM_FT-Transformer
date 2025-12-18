@@ -55,12 +55,11 @@ def main():
 
     Featured_df = Feature_Engineering(df)
 
-    # -----------------------------
+   
     # Save engineered dataset
-    # -----------------------------
     print(Featured_df.info())
-    print("Writing File")
     OUTPUT_PATH = os.path.join("data", "sample_Featured_Data.csv")
+    print(f"Writing File in {OUTPUT_PATH}")
     df.to_csv(OUTPUT_PATH, index=False)
 
     print(f"Feature engineering complete. Saved to: {OUTPUT_PATH}")
