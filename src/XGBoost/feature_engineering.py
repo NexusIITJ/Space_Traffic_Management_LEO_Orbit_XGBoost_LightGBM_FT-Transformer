@@ -1,81 +1,74 @@
 import os
 import pandas as pd
 import numpy as np
+
 # FIle size increased by 10 mb after Feature Engineering
-# Paths
-INPUT_PATH = os.path.join("data", "Merged_DATA.xlsx")
-# Load cleaned data
-df = pd.read_excel(INPUT_PATH)
 
-# -----------------------------
-# 1. Log transform of Pc
-# -----------------------------
-df['log_cdmPc'] = np.log1p(df['cdmPc'])   # log(1 + Pc)
+def Feature_Engineering(df : pd.DataFrame ) -> pd.DataFrame:
+    # 1. Log transform of Pc
+    df['log_cdmPc'] = np.log1p(df['cdmPc'])   # log(1 + Pc)
 
-# -----------------------------
-# 2. Inverse miss distance
-# -----------------------------
-df['inv_miss_distance'] = 1 / (df['cdmMissDistance'] + 1)
+    # 2. Inverse miss distance
+    df['inv_miss_distance'] = 1 / (df['cdmMissDistance'] + 1)
 
-# -----------------------------
-# 3. TCA time bin (12-hour buckets)
-# -----------------------------
-df['tca_bin'] = (df['hours_to_tca'] // 12).astype(int)
+    # 3. TCA time bin (12-hour buckets)
+    df['tca_bin'] = (df['hours_to_tca'] // 12).astype(int)
 
-# -----------------------------
-# 4. Same satellite type
-# -----------------------------
-df['same_sat_type'] = (df['SAT1_CDM_TYPE'] == df['SAT2_CDM_TYPE']).astype(int)
+    # 4. Same satellite type
+    df['same_sat_type'] = (df['SAT1_CDM_TYPE'] == df['SAT2_CDM_TYPE']).astype(int)
 
-# -----------------------------
-# 5. Debris–debris pair
-# -----------------------------
-df['is_debris_pair'] = (
-    (df['rso1_objectType'] == "DEBRIS") &
-    (df['rso2_objectType'] == "DEBRIS")
-).astype(int)
+    # 5. Debris–debris pair
+    df['is_debris_pair'] = (
+        (df['rso1_objectType'] == "DEBRIS") &
+        (df['rso2_objectType'] == "DEBRIS")
+    ).astype(int)
 
-# -----------------------------
-# 6. Close in all axes
-# -----------------------------
-df['close_all_axes'] = (
-    df['condition_InTrack_500m'] &
-    df['condition_CrossTrack_500m'] &
-    df['condition_Radial_100m']
-).astype(int)
+    # 6. Close in all axes
+    df['close_all_axes'] = (
+        df['condition_InTrack_500m'] &
+        df['condition_CrossTrack_500m'] &
+        df['condition_Radial_100m']
+    ).astype(int)
 
-# -----------------------------
-# 7. Risky uncertainty
-# -----------------------------
-df['risky_uncertainty'] = (
-    df['condition_sat2posUnc_1km'] &
-    df['condition_InTrack_500m']
-).astype(int)
+    # 7. Risky uncertainty
+    df['risky_uncertainty'] = (
+        df['condition_sat2posUnc_1km'] &
+        df['condition_InTrack_500m']
+    ).astype(int)
 
-# -----------------------------
-# 8. Distance ratio
-# -----------------------------
-df['distance_ratio'] = df['cdmMissDistance'] / (df['hours_to_tca'] + 1)
+    # 8. Distance ratio
+    df['distance_ratio'] = df['cdmMissDistance'] / (df['hours_to_tca'] + 1)
 
-# -----------------------------
-# 9. Object type match
-# -----------------------------
-df['object_type_match'] = (
-    df['rso1_objectType'] == df['rso2_objectType']
-).astype(int)
+    # 9. Object type match
+    df['object_type_match'] = (
+        df['rso1_objectType'] == df['rso2_objectType']
+    ).astype(int)
 
-# -----------------------------
-# Save engineered dataset
-# -----------------------------
-print(df.info())
-print("Writing File")
-
-OUTPUT_PATH = os.path.join("data", "Merged_Featured_DATA.xlsx")
-df.to_excel(OUTPUT_PATH, index=False)
-
-print(f"Feature engineering complete. Saved to: {OUTPUT_PATH}")
+    return df
 
 
+
+def main():
+    INPUT_PATH = os.path.join("data", "sample_data.csv")
+    # Load cleaned data
+    df = pd.read_csv(INPUT_PATH)
+
+    Featured_df = Feature_Engineering(df)
+
+    # -----------------------------
+    # Save engineered dataset
+    # -----------------------------
+    print(Featured_df.info())
+    print("Writing File")
+    OUTPUT_PATH = os.path.join("data", "sample_Featured_Data.csv")
+    df.to_csv(OUTPUT_PATH, index=False)
+
+    print(f"Feature engineering complete. Saved to: {OUTPUT_PATH}")
+
+if __name__ == "__main__":
+    main()
+
+    
 # ---
 
 # ###  **1. `log_cdmPc`**  

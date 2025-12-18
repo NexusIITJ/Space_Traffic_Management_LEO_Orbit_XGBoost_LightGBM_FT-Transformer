@@ -1,15 +1,14 @@
 import os
 import pandas as pd
 
-DATA_DIR = "data"
-OUTPUT_DIR = "Merged_DATA.xlsx"
+
 RAW_FILES = [
     "CZ_6A_Events_2024-08-06.xlsx",
     "CZ_6A_Events_2024-09-06.xlsx",
-    "CZ_6A_Events_2024-10-06.xlsx",
-    "CZ_6A_Events_2025-02-06.xlsx",
-    "CZ_6A_Events_2025-06-06.xlsx",
-    "CZ_6A_Events_2025-08-06.xlsx",
+    # "CZ_6A_Events_2024-10-06.xlsx",
+    # "CZ_6A_Events_2025-02-06.xlsx",
+    # "CZ_6A_Events_2025-06-06.xlsx",
+    # "CZ_6A_Events_2025-08-06.xlsx",
 ]
 
 
@@ -49,14 +48,15 @@ def basic_clean(df: pd.DataFrame) -> pd.DataFrame:
     }
 
     df = df.rename(columns={k: v for k,v in rename_map.items() if k in df.columns })
-   
+    
+    df['cdmTca'] = pd.to_datetime(df['cdmTca'], errors='coerce')
+    df['creationTsOfCDM'] = pd.to_datetime(df['creationTsOfCDM'], errors='coerce')
 
     # Create hours_to_tca if timestamps exist
     if 'creationTsOfCDM' in df.columns and 'cdmTca' in df.columns:
         df['hours_to_tca'] = (df['cdmTca'] - df['creationTsOfCDM']).dt.total_seconds() / 3600.0
     else:
         df['hours_to_tca'] = None
-
 
     # Fill some obvious missing values (Pure Assumption for safety check)
     if 'cdmPc' in df.columns:
@@ -70,14 +70,15 @@ def basic_clean(df: pd.DataFrame) -> pd.DataFrame:
     if 'org2_displayName' in df.columns:
         df['org2_displayName'] = df['org2_displayName'].fillna("VACANT")
     
-   
-    
-    # 2) Target: HighRisk
+   # 2) Target: HighRisk
     df['HighRisk'] = (
         (df['cdmPc'] > 1e-6) & (df['cdmMissDistance'] < 2000)
     ).astype(int)
-    print("\nAfter basic_clean:")
-    return df
+    minor_df = df[df['HighRisk'] == 1].sample(10, random_state=43)
+    major_df = df[df['HighRisk'] == 0].sample(25, random_state=43)
+    final_df = pd.concat([major_df,minor_df])
+
+    return final_df
 
 
 def save_clean_data(df : pd.DataFrame , data_dir:str, filename:str)-> str:
@@ -85,11 +86,14 @@ def save_clean_data(df : pd.DataFrame , data_dir:str, filename:str)-> str:
     # save Merge and Clean data
     output_path = os.path.join(data_dir , filename)
     print(f"\n Saving Cleanding data to :{output_path}")
+    print("\nAfter basic_clean:")
     print(df.info())
-    df.to_excel(output_path, index=False)
-    return output_path
+    df.to_csv(output_path, index=False)
+    
 
-# OUTPUT_DIR = "Merged_DATA.xlsx"
+DATA_DIR = "data"
+OUTPUT_DIR = "sample_data.csv"
+
 def main():
     
     #1 Load and merge
