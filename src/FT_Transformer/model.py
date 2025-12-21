@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from Tokenizer import FeatureTokenizer
-from encoder import TransformerEncoder
+from src.FT_Transformer.Tokenizer import FeatureTokenizer
+from src.FT_Transformer.encoder import TransformerEncoder
 
 
 class FTTransformer(nn.Module):

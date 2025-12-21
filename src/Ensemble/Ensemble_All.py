@@ -19,7 +19,7 @@ import lightgbm as lgb
 # Feature Lists (same as training)
 # -----------------------------
 
-from LightGBM.LightGBM import (
+from LightGBM.Light_GBM import (
     LGB_Boost, LGB_Boost_NoLeak,
     LGB_Boost_Featured, LGB_Boost_NoLeak_Featured,
     CATEGORICAL_COLS
