@@ -49,9 +49,9 @@ MODEL_LIST = [
 # -----------------------------
 
 def load_xgb_probs(model_name, feature_list, data_df):
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    # base_dir = os.path.dirname(os.path.abspath(__file__))
     model_file = model_name + ".json"
-    model_path = os.path.join("..", "models", model_file)
+    model_path = os.path.join("models", model_file)
     
     print("Loading model from:", model_path)
     
@@ -64,7 +64,8 @@ def load_xgb_probs(model_name, feature_list, data_df):
 # Helper: Load LightGBM model probs
 # -----------------------------
 def load_lgb_probs(model_name, feature_list, data_df):
-    model_path = os.path.join("models", model_name + "_LGB.txt")
+    model_file = model_name + "_LGB.txt"
+    model_path = os.path.join("models", model_file )
     model = lgb.Booster(model_file=model_path)
     X = data_df[feature_list]
     return model.predict(X)
