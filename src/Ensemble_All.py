@@ -53,7 +53,7 @@ def load_xgb_probs(model_name, feature_list, data_df):
     # base_dir = os.path.dirname(os.path.abspath(__file__))
     # model_file = model_name + ".json"
     # model_path = os.path.join("models", model_file)
-    model_path = f"models/{name}.json"
+    model_path = f"models/{model_name}.json"
 
     if os.path.exists(model_path):
         st.write("Model file found:", model_path)
