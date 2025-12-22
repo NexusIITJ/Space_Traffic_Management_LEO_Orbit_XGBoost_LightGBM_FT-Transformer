@@ -1,0 +1,10 @@
+Best AUC-PR: 0.6942839575997961
+n_estimators: 204
+max_depth: 8
+learning_rate: 0.0739994937533755
+subsample: 0.9257586930950283
+colsample_bytree: 0.8138046551270606
+reg_lambda: 8.179992885149012
+min_child_weight: 3.3838458193912704
+gamma: 3.588948068233977
+scale_pos_weight: 168.84578374289774
