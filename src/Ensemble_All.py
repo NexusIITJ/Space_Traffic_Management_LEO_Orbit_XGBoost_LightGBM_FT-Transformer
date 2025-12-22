@@ -48,7 +48,9 @@ MODEL_LIST = [
 # Helper: Load XGBoost model probs
 # -----------------------------
 def load_xgb_probs(model_name, feature_list, data_df):
-    model_path = os.path.join(".." , "models", model_name , ".json")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(base_dir , ".." , "models", model_name , ".json")
+    print(model_path)
     model = XGBClassifier()
     model.load_model(model_path)
     X = data_df[feature_list]
