@@ -58,8 +58,10 @@ def load_xgb_probs(model_name, feature_list, data_df):
     st.write("Loading model from:", model_path)
     current_dir = os.getcwd()
     st.write("Current working directory:", current_dir)
-    model_path2 = os.path.join(".." , "models", model_file)
-    st.write(model_path2)
+    files = os.listdir(current_dir)
+    st.write("Files in this directory:")
+    st.write(files)
+    
     model = XGBClassifier()
     model.load_model(model_path)
     
