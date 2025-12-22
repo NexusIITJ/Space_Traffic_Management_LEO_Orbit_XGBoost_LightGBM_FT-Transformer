@@ -8,3 +8,4 @@ optuna
 lightgbm
 xgboost
 torch
+streamlit
