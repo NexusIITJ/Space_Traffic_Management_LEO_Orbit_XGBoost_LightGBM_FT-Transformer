@@ -8,7 +8,6 @@ optuna
 lightgbm
 xgboost
 torch
-streamlit
-vega_datasets
+streamlit>=1.32
 altair<5
 vega_datasets
