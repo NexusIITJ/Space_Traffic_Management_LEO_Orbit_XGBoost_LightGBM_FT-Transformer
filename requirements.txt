@@ -9,5 +9,6 @@ lightgbm
 xgboost
 torch
 streamlit
-altair
+vega_datasets
+altair<5
 vega_datasets
