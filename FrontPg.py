@@ -54,7 +54,7 @@ with Mcol1:
         )
 
         if pd.isna(creationTsOfCDM):
-            st.warning("⚠️ Please enter a valid datetime in format YYYY-MM-DD HH:MM:SS")
+            st.warning("Please enter a valid datetime in format YYYY-MM-DD HH:MM:SS")
             # Optionally set a default
         cdmTca = pd.Timestamp.now()
         cdmTca = pd.to_datetime(
@@ -64,7 +64,7 @@ with Mcol1:
         )
 
         if pd.isna(cdmTca):
-            st.warning("⚠️ Please enter a valid datetime in format YYYY-MM-DD HH:MM:SS")
+            st.warning("Please enter a valid datetime in format YYYY-MM-DD HH:MM:SS")
             # Optionally set a default
         cdmTca = pd.Timestamp.now()
         
@@ -145,9 +145,27 @@ with st.expander("About Data"):
     HeatMap_Img_Path = os.path.join(os.path.dirname(__file__), "outputs", "Plots" ,"Correlation_Heatmap_Top.png" )
     st.image(HeatMap_Img_Path)
 
+
+# Custom CSS to style links
+st.markdown(
+    """
+    <style>
+    a {
+        text-decoration: none;
+        color: white !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 with st.sidebar:
     st.header("About app")
     st.write("Created By Nexus IIT-J")
+    st.write("For More Information Visit : ")
+    st.markdown('<a href="https://nexus-iitj.vercel.app/">NexusIITJ Website</a>', unsafe_allow_html=True)
+    st.markdown('<a href="https://github.com/NexusIITJ/SDC">NexusIITJ GitHub</a>', unsafe_allow_html=True)
+
 
 
 
